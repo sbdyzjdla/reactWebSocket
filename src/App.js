@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import ChatComponents from './components/ChatComponents';
 
-function App() {
+
+class App extends React.Component {
+
+  constructor(props) {
+      super(props);
+      this.state = {
+          username:null
+      };
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:3001/api')
+      .then(res=> res.json())
+      .then(data=>this.setState({username:data.username}));
+  }
+  
+
+render() {
+  const {username} = this.state;
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <BrowserRouter>
+          <Switch>
+            <Route path ="/" exact component = {ChatComponents}></Route>
+          </Switch>
+          <header className="App-header">
+            {username ? `Hello ${username}` : '1'}
+          </header>
+        </BrowserRouter>
+      </div>
   );
+  ;
+}
 }
 
 export default App;
+
