@@ -43,7 +43,7 @@ export default function DesignComponents() {
     const classes = useStyles();
     return (
         <div>
-            <Container maxWidth="sm">
+            
                 <main className={classes.layout}>
                     <Typography component="div" style={{height: '2vh' }} align="center" />
                     <Typography component="div" style={{height: '80vh' }} align="center">
@@ -84,7 +84,6 @@ export default function DesignComponents() {
                         </Button>
                     </form>
                 </Typography>
-            </Container>
             
         </div>
     )

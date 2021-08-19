@@ -22,13 +22,14 @@ io.on("connection", function (socket) {
   socket.on("roomjoin", (userid) => {  //roomjoin 이벤트명으로 데이터받기 //socket.on
     console.log(userid);
     socket.join(userid);               //userid로 방 만들기
-    io.to("roomjoin").emit(userid + "님이 입장하셨습니다.");
+    var returnData = userid + '님이 입장하셨습니다.';
+    io.to(userid).emit('clientReceive', returnData);          //io(방아이디).emit(이벤트명, 데이터 )
   });
 
   socket.on("alert", (data) => {  //alet 이벤트로 데이터 받기 
     console.log(data.room);
     console.log(data.message);
-    io.to(data).emit("heejewake", data);  //touserid: 클라이언트1이 보낸데이터"hwi"
+    io.to(data.room).emit("heejewake", data);  //touserid: 클라이언트1이 보낸데이터"hwi"
   });                                             //heejewake이벤트: hwi 에게 메시지 hwi를 보낸다
 });                                              
 
