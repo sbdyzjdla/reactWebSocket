@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import ChatComponents from './ChatComponents';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -72,12 +73,13 @@ export default function DesignComponents() {
                 </main>
                 <Typography component="div" align="center" >
                     <form className={classes.root} noValidate autoComplete="off">
-                        <TextField id="standard-basic" label="메세지" style = {{width: "25rem"}}/>
+                        <TextField id="message" label="메세지" style = {{width: "25rem"}}/>
                         <Button
                             variant="contained"
                             color="primary"
                             className={classes.button}
-                            endIcon={<SendIcon />}>
+                            endIcon={<SendIcon />}
+                            onClick={ChatComponents.sendMessage}>
                             보내기
                         </Button>
                     </form>

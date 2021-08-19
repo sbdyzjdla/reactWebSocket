@@ -2,7 +2,6 @@ import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import ChatComponents from './components/ChatComponents';
 
-
 class App extends React.Component {
 
   constructor(props) {
@@ -12,11 +11,11 @@ class App extends React.Component {
       };
   }
 
-  componentDidMount() {
-    fetch('http://localhost:3001/api')
-      .then(res=> res.json())
-      .then(data=>this.setState({username:data.username}));
-  }
+  // componentDidMount() {
+  //   fetch('http://localhost:3001/api')
+  //     .then(res=> res.json())
+  //     .then(data=>this.setState({username:data.username}));
+  // }
   
 
 render() {
