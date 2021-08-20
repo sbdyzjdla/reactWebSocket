@@ -19,18 +19,19 @@ const useStyles = makeStyles((theme) => ({
   }));
   var message = 'asadasdsa';
 
-export default function WriterMsgComponets({message, writer}) {
+export default function AnoClientComponents({message, writer}) {
     const classes = useStyles();
     return (
         <div>
             <Paper className={classes.paper} style={{margin : '30px' }}>
                 <Grid container wrap="nowrap" spacing={2}>
                 
-                    <Grid item xs>
-                        <Typography>{message}</Typography>
-                    </Grid>
+                    
                     <Grid item>
                         <Avatar>{writer}</Avatar>
+                    </Grid>
+                    <Grid item xs>
+                        <Typography>{message}</Typography>
                     </Grid>
                 </Grid>
             </Paper>

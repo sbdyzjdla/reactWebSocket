@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{ useState, useEffect } from 'react'
 import DesignComponents from './DesignComponents'
 import io from "socket.io-client";
 import { Button } from '@material-ui/core';
@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import WriterMsgComponets from './WriterMsgComponets';
+import AnoClientComponents from './AnoClientComponents';
 
 const socket = io("http://localhost:3001/");
 
@@ -42,40 +43,56 @@ const styles = theme => ({
         },
       },
   });   
-  const message = `Truncation should be conditionally applicable on this long line of text
-  as this is a much longer line than what the container can support. `;
-
+  
 class ChatComponents extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             userid : 'been',
-            test : 'test',
+            visitor : 'visitor',
+            chatInfo : [
+               //{'writer' : 'aaa', 'message' : 'asdaasqq'}
+            ],
         };
     }
+
 
     //lifecycle
     // componentWillMount() {
     //     socket.emit("roomjoin", this.state.userid);
     // }
     componentDidMount() {
-        //const name = prompt('name?');
-        const name = 'temp';
-        this.setState({userid : name}, () => {      // this.setState는 비동기 -> callback
+        const name = prompt('name?');
+        //const name = 'temp';
+        this.setState({userid : name, visitor : name}, () => {      // this.setState는 비동기 -> callback
             socket.emit("roomjoin", this.state.userid);    
         });
 
-        socket.on("clientReceive", (data) => {
+        socket.on("enterClient", (data) => {
             console.log(data);
+            this.setState({visitor : data}, () => {
+            });
+            
+        });
+
+        socket.on("receiveMesg", (data) => {
+            this.state.chatInfo.push({'writer' : data.writer, 'message' : data.message});
+            this.setState((chatInfo) => {
+                return {
+                    writer : data.writer,
+                    message : data.message,
+                };
+            });
         });
     }
-
+    
     sendMessage = (e) => {
-        var str = {
+        var data = {
             "room" : "roomjoin",
             "message" : document.querySelector('#message').value,
+            "writer" : this.state.userid,
         };
-        socket.emit("alert", str);
+        socket.emit("sendMesg", data);
         document.querySelector('#message').value = '';
     }
 
@@ -86,13 +103,9 @@ class ChatComponents extends React.Component {
     }
 
     sendMessageView = (e) => {
-        console.log('paper');
-        //return this.state.userid;
-        return <WriterMsgComponets message={this.state.test}/>;
+        return <WriterMsgComponets message={this.state.test} writer={this.state.test}/>;
     }
-
     
-
     render() {
         const { classes } = this.props;
         return (
@@ -100,30 +113,16 @@ class ChatComponents extends React.Component {
                 <Container maxWidth="sm">
                  <main className={classes.layout}>
                     <Typography component="div" style={{height: '2vh' }} align="center" />
-                    <Typography component="div" style={{height: '80vh' }} align="center" itemID="mbox">
-                        <Paper className={classes.paper} style={{margin : '30px' }}>
-                            <Grid container wrap="nowrap" spacing={2}>
-                                <Grid item>
-                                    <Avatar>W</Avatar>
-                                </Grid>
-                                <Grid item xs>
-                                    <Typography>{message}</Typography>
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                        <Paper className={classes.paper} style={{margin : '30px' }}>
-                            <Grid container wrap="nowrap" spacing={2}>
-                            
-                                <Grid item xs>
-                                    <Typography>{message}</Typography>
-                                </Grid>
-                                <Grid item>
-                                    <Avatar>S</Avatar>
-                                </Grid>
-                            </Grid>
-                        </Paper>
+                    <Typography component="div" style={{height: '80vh', overflow: 'auto' }} align="center" itemID="mbox">
                         {
-                            this.sendMessageView()
+                            this.state.visitor
+                        }
+                        {
+                            this.state.chatInfo.map((chat, i) => {
+                            return ( this.state.userid === chat.writer ?
+                            <WriterMsgComponets message={chat.message} writer={chat.writer}/>
+                            : <AnoClientComponents message={chat.message} writer={chat.writer}/>
+                            )}) 
                         }
                     </Typography>
                     <Typography component="div" style={{height: '2vh' }} align="center" />
@@ -139,7 +138,6 @@ class ChatComponents extends React.Component {
                             보내기
                         </Button>
                 </Typography>
-                <Button onClick={this.sendMessageView}>버튼</Button>
                 </Container>
             </div>
         )
